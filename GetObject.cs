@@ -12,6 +12,7 @@ public class GetObject : MonoBehaviour
     void Start()
     {
         target = GameObject.Find(this.name).GetComponent<Object>(); //현재의 오브젝트를 가져옴
+        getCamera = Camera.main;
     }
     
     void Update()
