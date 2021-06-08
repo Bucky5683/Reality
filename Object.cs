@@ -54,7 +54,7 @@ public class Object : MonoBehaviour
                 calling.target.leftclick = false;
                 calling.target.rightclick = false;
             }
-            calling.target = ObjectManager.instance.transform.GetChild(my_ID).gameObject; //현재 클릭 오브젝트를 자신으로 바꿈
+            calling.target = ObjectManager.instance.transform.GetChild(my_ID).gameObject.GetComponent<Object>(); //현재 클릭 오브젝트를 자신으로 바꿈
         }
         else
         {
