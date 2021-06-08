@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Maincamera : MonoBehaviour
 {
-    private Vector3 firstlocation = new Vector3(500, 500, 300); //메인카메라 처음위치
+    private Vector3 firstlocation = new Vector3(400, 600, 200); //메인카메라 처음위치
     private Cylindertest target_object; // 선택된 오브젝트 받아오기 위해서
     public Object target;        // 따라다닐 타겟 오브젝트의 Transform
     private float speed_rota = 2.0f;

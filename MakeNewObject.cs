@@ -30,7 +30,7 @@ public class MakeNewObject : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (num > frSize-1)     // frames 끝나면 Update를 멈춘다
         {
