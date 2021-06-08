@@ -27,7 +27,7 @@ public class Maincamera : MonoBehaviour
             else
                 Debug.Log("Maincamera: target is null!");*/
             tr.position = firstlocation;
-            tr.rotation = Quaternion.Euler(30, 0, 0);
+            tr.rotation = Quaternion.Euler(90, 0, 0);
         }
         else if (target.rightclick == true || target.leftclick == true)
         {
@@ -35,12 +35,14 @@ public class Maincamera : MonoBehaviour
             {
                 //Debug.Log("Maincamera: Left checked!");
                 tr.position = new Vector3(target.object_name.position.x - 0.52f, tr.position.y, target.object_name.position.z - 6.56f);
+                tr.rotation = Quaternion.Euler(30, 0, 0);
                 tr.LookAt(target.object_name);
             }
             else if (target.rightclick == true)
             {
                 //Debug.Log("Maincamera: right checked!");
                 tr.position = new Vector3(target.object_name.position.x, target.object_name.position.y, target.object_name.position.z);
+                tr.rotation = Quaternion.Euler(0, 0, 0);
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
                 transform.Rotate(Vector3.up * speed_rota * mouseX);
@@ -50,7 +52,7 @@ public class Maincamera : MonoBehaviour
             {
                 //Debug.Log("Maincamera: both checked!");
                 tr.position = firstlocation;
-                tr.rotation = Quaternion.Euler(30, 0, 0);
+                tr.rotation = Quaternion.Euler(90, 0, 0);
                 /*tr.position = new Vector3(target.object_name.position.x - 0.52f, tr.position.y, target.object_name.position.z - 6.56f);
                 tr.LookAt(target.object_name);*/
             }
