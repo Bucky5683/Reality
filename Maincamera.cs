@@ -19,7 +19,7 @@ public class Maincamera : MonoBehaviour
 
     void LateUpdate()
     {
-        
+        Debug.Log(target.leftclick + " " + target.rightclick);
         if (target == null || (target.rightclick == false && target.leftclick == false))
         {
             /*if (target != null)
@@ -59,7 +59,7 @@ public class Maincamera : MonoBehaviour
         }
         if(target != null)
         {
-            Debug.Log("Maincamera: " + target.object_name.name + " leftclick = " + target.leftclick + " rightclick = " + target.rightclick);
+            Debug.Log("Maincamera: " + target.object_name.GetInstanceID() + " leftclick = " + target.leftclick + " rightclick = " + target.rightclick);
         }
     }
 }
