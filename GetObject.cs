@@ -6,12 +6,14 @@ public class GetObject : MonoBehaviour
 {
     public Camera getCamera; //카메라받아옴
     private Object target; //현재오브젝트
+    private int target_ID;
     private RaycastHit hit;
-    private string object_name; //오브젝트 이름
+    private int object_ID; //오브젝트 이름
 
     void Start()
     {
-        target = GameObject.Find(this.name).GetComponent<Object>(); //현재의 오브젝트를 가져옴
+        target_ID = this.GetInstanceID(); //현재의 오브젝트를 가져옴
+        target = ObjectManager.instance.transform.GetChild(target_ID).gameObject.GetComponent<Object>();
         getCamera = Camera.main;
     }
     
@@ -19,7 +21,7 @@ public class GetObject : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) //왼쪽클릭시
         {
-            if (checking() == this.name)//마우스포인터가 현재 오브젝트에 있을 경우
+            if (checking() == this.GetInstanceID())//마우스포인터가 현재 오브젝트에 있을 경우
             {
                 if (target.rightclick == false && target.leftclick == false)
                 {
@@ -51,7 +53,7 @@ public class GetObject : MonoBehaviour
         else if (Input.GetMouseButtonDown(1)) //오른쪽 클릭한 경우 -> 왼쪽클릭했을 때처럼 진행
         {
             //Debug.Log("Pressed right click");
-            if (checking() == this.name)
+            if (checking() == this.GetInstanceID())
             {
                 if (target.leftclick == false && target.rightclick == false)
                 {
@@ -77,15 +79,15 @@ public class GetObject : MonoBehaviour
         }
     }
 
-    string checking() //마우스포인터가 오브젝트에 있는지 없는지 확인 -> 정상작동 되므로 신경 X
+    int checking() //마우스포인터가 오브젝트에 있는지 없는지 확인 -> 정상작동 되므로 신경 X
     {
         Ray ray = getCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit))
         {
-            object_name = hit.collider.gameObject.name;
+            object_ID = hit.collider.gameObject.GetInstanceID();
         }
         //Debug.Log(object_name);
-        return object_name;
+        return object_ID;
     }
 }
