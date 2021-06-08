@@ -17,7 +17,8 @@ public class Cylindertest : MonoBehaviour
         Checkobject();
         if (target != null)
         {
-            Debug.Log(target.object_name.GetInstanceID() + " leftclick = " + target.leftclick + " rightclick = " + target.rightclick);
+            //Debug.Log(target.object_name.GetInstanceID() + " leftclick = " + target.leftclick + " rightclick = " + target.rightclick);
+            Debug.Log("target : " + target.object_name);
             FollowCamera();
         }
     }
