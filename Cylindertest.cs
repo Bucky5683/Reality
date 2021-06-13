@@ -9,6 +9,18 @@ public class Cylindertest : MonoBehaviour
 
     void Start()
     {
+        /*var engine = IronPython.Hosting.Python.CreateEngine();
+        var scope = engine.CreateScope();
+
+        try
+        {
+            var source = engine.CreateScriptSourceFromFile(@"REALITY.py");
+            source.Execute(scope);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }*/
         //canvas = GetComponent<Transform>();
     }
 
@@ -18,7 +30,7 @@ public class Cylindertest : MonoBehaviour
         if (target != null)
         {
             //Debug.Log(target.object_name.GetInstanceID() + " leftclick = " + target.leftclick + " rightclick = " + target.rightclick);
-            Debug.Log("target : " + target.object_name);
+            //UnityEngine.Debug.Log("target : " + target.object_name);
             FollowCamera();
         }
     }
