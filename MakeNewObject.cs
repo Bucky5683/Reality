@@ -11,7 +11,7 @@ public class MakeNewObject : MonoBehaviour
     //public GameObject cubePrefab;
 
     int num = 0; // 프레임 순서 및 넘버
-    int frSize = 56; // 프레임 개수
+    int frSize = 627; // 프레임 개수
     
 
     // MakeData를 위한 선언
@@ -24,6 +24,7 @@ public class MakeNewObject : MonoBehaviour
 
     public void Start()
     {
+        PythonPlay.python();
         MakeData();
         //for (int i =0; i<10; i++)
         //    print(objectMap[0, i]);
@@ -32,25 +33,28 @@ public class MakeNewObject : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (num == 626)
+        {
+            Debug.Log("아 ㅅㅂ ");
+        }
         if (num > frSize-1)     // frames 끝나면 Update를 멈춘다
         {
             return;
         }
 
 
-        for (int i = 0; i < 10; i++)    // i 는 ID
+        for (int i = 1; i <= 383; i++)    // i 는 Move 컴포넌트 속 ID, i-1은 객체 순서 ( GetChild에 쓰는 것 )
         {
             if (objectMap[num, i] == 0)      // 이번 프레임에는 i번 ID의 객체가 없음
             {
                 // 그 번호의 객체 끄기
-                ObjectManager.instance.transform.GetChild(i).gameObject.SetActive(false);
+                ObjectManager.instance.transform.GetChild(i-1).gameObject.SetActive(false);
             }
             else if (objectMap[num, i] > 0) // 이번 프레임에 i번 ID의 객체가 있음
             {
                 // 그 번호의 객체를 그 좌표로 보여주기
-                //print("엥");
-                 ObjectManager.instance.transform.GetChild(i).gameObject.SetActive(true);
-                ObjectManager.instance.transform.GetChild(i).position
+                 ObjectManager.instance.transform.GetChild(i-1).gameObject.SetActive(true);
+                ObjectManager.instance.transform.GetChild(i-1).position
                = new Vector3(float.Parse(Sentence[objectMap[num, i], 1]), 0, float.Parse(Sentence[objectMap[num, i], 2]));
             }
         }
@@ -101,8 +105,8 @@ public class MakeNewObject : MonoBehaviour
         // frame 이 몇 개인지는 미리 받기로 함. 
         frames = new float[frSize, 2];
 
-        // 객체 id 지금 최대가 10
-        objectMap = new int[frSize, 10]; 
+        // 객체 id 지금 최대가 393
+        objectMap = new int[frSize, 384]; 
 
         int f = 0;
 
@@ -116,7 +120,7 @@ public class MakeNewObject : MonoBehaviour
 
                 for (int k = i + 1; k <= i + frames[f, 0]; k++) // frame내에서 line돌며 id확인
                 { 
-                    for (int id = 0; id <10; id++)
+                    for (int id = 0; id <383; id++)
                     {
                         if (float.Parse(Sentence[k, 0]) == id)
                         {
