@@ -16,7 +16,7 @@ public class MakeNewObject : MonoBehaviour
 
 
     // MakeData를 위한 선언
-    static string strFile = "../Resources/reality_data.txt";
+    static string strFile;
     string undotext;
     public TextAsset txt;
     public string[,] Sentence;
@@ -27,6 +27,7 @@ public class MakeNewObject : MonoBehaviour
 
     public void Start()
     {
+        strFile = Application.dataPath + "/Resources/reality_data.txt";
         PythonPlay.python();
         //for (int i =0; i<10; i++)
         //    print(objectMap[0, i]);
