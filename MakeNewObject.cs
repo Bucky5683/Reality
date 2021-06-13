@@ -39,10 +39,10 @@ public class MakeNewObject : MonoBehaviour
         if (fileInfo.Exists)
         {
             txt = Resources.Load("reality_data") as TextAsset;
-        }
-        if (fileInfo.Exists && check)
-        {
-            MakeData();
+            
+            if(check)
+                MakeData();
+
             if (num == 626)
             {
                 Debug.Log("¾Æ ¤µ¤² ");
