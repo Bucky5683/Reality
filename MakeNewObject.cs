@@ -16,8 +16,7 @@ public class MakeNewObject : MonoBehaviour
 
 
     // MakeData를 위한 선언
-    static string strFile = "../Reasource/reality_data.txt";
-    FileInfo fileInfo = new FileInfo(strFile);
+    static string strFile = "C:/Users/user-pc/OneDrive - 숭실대학교 - Soongsil University/숭실대학교/숭실대학교 3학년/소프트웨어프로젝트/Yndoo's Practice/Assets/Resources/reality_data.txt";
     string undotext;
     public TextAsset txt;
     public string[,] Sentence;
@@ -36,10 +35,12 @@ public class MakeNewObject : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        FileInfo fileInfo = new FileInfo(strFile);
+        //Debug.Log(fileInfo.Exists);
         if (fileInfo.Exists)
         {
             txt = Resources.Load("reality_data") as TextAsset;
-            
+            //Debug.Log(txt);
             if(check)
                 MakeData();
 
