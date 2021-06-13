@@ -6,7 +6,7 @@ using System;
 
 public class PythonPlay : MonoBehaviour
 {
-    public void python()
+    public static void python()
     {
         try
         {

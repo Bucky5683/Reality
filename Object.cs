@@ -20,7 +20,7 @@ public class Object : MonoBehaviour
     //시작하자마자 한번 실행됨 -> 아두이노 생각하면 편함
     void Start()
     {
-        my_ID = this.GetComponent<Move>().objectID;
+        my_ID = this.GetComponent<Move>().objectID-1;
         object_name = ObjectManager.instance.transform.GetChild(my_ID).gameObject.GetComponent<Transform>();//실행되는 스크립트의 오브젝트 이름 가져오기
         calling = GameObject.Find("Canvas").GetComponent<Cylindertest>();//UI 스크립트 접근
     }
@@ -32,7 +32,6 @@ public class Object : MonoBehaviour
     //클릭시 자신을 선택된 오브젝트로 설정
     void Click_behaving()
     {
-        //Debug.Log(this.GetInstanceID() + " leftclick = " + this.leftclick + " rightclick = " + this.rightclick);
         //왼쪽 클릭시
         if (leftclick == true) //클릭이 되면
         {

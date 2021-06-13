@@ -12,7 +12,7 @@ public class GetObject : MonoBehaviour
 
     void Start()
     {
-        target_ID = this.GetComponent<Move>().objectID; //현재의 오브젝트를 가져옴
+        target_ID = this.GetComponent<Move>().objectID-1; //현재의 오브젝트를 가져옴
         target = ObjectManager.instance.transform.GetChild(target_ID).gameObject.GetComponent<Object>();
         getCamera = Camera.main;
     }
@@ -21,7 +21,6 @@ public class GetObject : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) //왼쪽클릭시
         {
-            Debug.Log(target_ID + " Pressed left click");
             if (checking() == target_ID)//마우스포인터가 현재 오브젝트에 있을 경우
             {
                 if (target.rightclick == false && target.leftclick == false)
@@ -53,7 +52,7 @@ public class GetObject : MonoBehaviour
         }
         else if (Input.GetMouseButtonDown(1)) //오른쪽 클릭한 경우 -> 왼쪽클릭했을 때처럼 진행
         {
-            Debug.Log("Pressed right click");
+            //Debug.Log("Pressed right click");
             if (checking() == target_ID)
             {
                 if (target.leftclick == false && target.rightclick == false)
@@ -86,9 +85,9 @@ public class GetObject : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            object_ID = hit.collider.GetComponent<Move>().objectID;
+            object_ID = hit.collider.gameObject.GetComponent<Move>().objectID;
         }
-        //Debug.Log("hit it!");
+        //Debug.Log(object_name);
         return object_ID;
     }
 }
