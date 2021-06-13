@@ -13,7 +13,7 @@ public class Object : MonoBehaviour
     public Transform object_name;   // 오브젝트 자신의 Transform(위치)
     private Cylindertest calling;   // UI 스크립트 접근 - 현재 선택된 오브젝트(target)에 접근
     private int my_ID;
-    private int a = 1;              //신경 안써도됨
+    //private int a = 1;              //신경 안써도됨
     public bool leftclick = false;  // 마우스 왼쪽 클릭
     public bool rightclick = false; // 마우스 오른쪽 클릭
 

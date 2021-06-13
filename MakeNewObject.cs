@@ -16,7 +16,7 @@ public class MakeNewObject : MonoBehaviour
 
 
     // MakeData를 위한 선언
-    static string strFile = "C:/Users/user-pc/OneDrive - 숭실대학교 - Soongsil University/숭실대학교/숭실대학교 3학년/소프트웨어프로젝트/Yndoo's Practice/Assets/Resources/reality_data.txt";
+    static string strFile = "../Resources/reality_data.txt";
     string undotext;
     public TextAsset txt;
     public string[,] Sentence;

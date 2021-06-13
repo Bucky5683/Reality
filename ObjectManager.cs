@@ -29,13 +29,15 @@ public class ObjectManager : MonoBehaviour
     [SerializeField]
     private Move poolObj;
     [SerializeField]
-    private int allocateCount = 10; // 미리 풀링 할 오브젝트 개수
+    private int allocateCount = 383; // 미리 풀링 할 오브젝트 개수
+
 
     private Stack<Move> poolStack = new Stack<Move>();
 
     private void Start()
     {
         Allocate();
+
     }
    
     public void Allocate()               // 풀링 할 오브젝트를 미리 정한 개수만큼 생성, 스택에 할당
@@ -45,8 +47,9 @@ public class ObjectManager : MonoBehaviour
             Move allocateObj = Instantiate(poolObj, this.gameObject.transform); 
             poolStack.Push(allocateObj);
             allocateObj.gameObject.SetActive(false);
-            allocateObj.objectID = i;
-            //Debug.Log(allocateObj.objectID);
+            allocateObj.objectID = i+1;
+            //Debug.Log("in objectManager" + allocateObj.objectID);
+            
         }
     }
 
