@@ -85,7 +85,7 @@ public class GetObject : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            object_ID = hit.collider.gameObject.GetComponent<Move>().objectID;
+            object_ID = hit.collider.gameObject.GetComponent<Move>().objectID-1;
         }
         //Debug.Log(object_name);
         return object_ID;

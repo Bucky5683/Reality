@@ -14,7 +14,7 @@ public class PythonPlay : MonoBehaviour
             //파이썬 실행파일 경로
             psi.StartInfo.FileName = "C:/Users/user-pc/anaconda3/python.exe";
             // 시작할 어플리케이션 또는 문서
-            psi.StartInfo.Arguments = "REALITY.py";
+            psi.StartInfo.Arguments = Application.dataPath + "/Script/REALITY.py";
             // 애플 시작시 사용할 인수
             psi.StartInfo.CreateNoWindow = true;
             // 새창 안띄울지

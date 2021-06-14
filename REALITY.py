@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[3]:
 
+import logging
 
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -21,11 +22,19 @@ import math
 
 
 # 전환된 이미지파일 저장할 경로
-imgs_path = './img'  
+imgs_path = 'D:/REALITY/unity/REALITY/Assets/Script/imgfolder'
 
 
 # 테스트 비디오 경로
-test_video_path = './test.mp4'  
+test_video_path = 'D:/REALITY/unity/REALITY/Assets/Resource/test.mp4'
+
+
+# output file 저장 경로
+output_path = 'D:/REALITY/unity/REALITY/Assets/Script/outputfolder'
+
+
+# 최종 파일 경로 + 이름
+final_path = 'D:/REALITY/unity/REALITY/Assets/Resources/reality_data.txt'
 
 
 """
@@ -80,7 +89,7 @@ def runDetector(detector, path):
 
   result = {key:value.numpy() for key,value in result.items()}
     
-  max_boxes = 10
+  max_boxes = 30
   min_score = 0.1
 
   boxes = result["detection_boxes"]
@@ -106,8 +115,10 @@ def runDetector(detector, path):
 
 
 
+
 def distance(x1, y1, x2, y2):
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+
 
 
 """
@@ -115,117 +126,89 @@ objectIndexing():
     같은 Class에 속하는 객체들을 구분하여 id값을 지정해주는 함수
 
 Args:
-    - output_df: run_detector()의 return 값으로 전달된 DataFrame
+    - beforeF, afterF : 연이은 프레임의 객체 인식 정보
+    - max_id : id의 최대값
 
 Returns:
-    - 객체들의 id 값이 담긴 list
+    - [해당 프레임 객체들의 id 값이 담긴 list, 업데이트 된 max_id]
     
 """
-
-def objectIndexing(output_df):
-    count_num = 0
-
-    for i in range(len(output_df.index)):
-        if output_df[0][i] == 'frame':
-          exec("frame%d = pd.DataFrame(columns=['id', 'x', 'y'])" % count_num)
-          count_num += 1
-        elif count_num <= 1:
-          exec("frame%d = frame%d.append({'id' : %d, 'x' : output_df[1][%d], 'y' : output_df[2][%d]}, ignore_index=True)" % (count_num-1, count_num-1, i, i, i))
-        else:
-          exec("frame%d = frame%d.append({'id' : 0, 'x' : output_df[1][%d], 'y' : output_df[2][%d]}, ignore_index=True)" % (count_num-1, count_num-1, i, i))
-        
-        
-    max_id = 0
-    for i in range(count_num):
-      exec("id = len(frame%d.index)" % i)
-      globals().update(locals())
-      if max_id < id:
-          max_id = id
-
-    return_id_list = ['frame']
-    exec("return_id_list += list(frame%d['id'])" % 0)
-
+def objectIndexing(beforeF, afterF, max_id):
     
-    # 프레임 수 -1번 반복
-    for frameNum in range(count_num-1):
-        exec("beforeF = frame%d" % int(frameNum))
-        exec("afterF = frame%d" % int(frameNum+1))
-        globals().update(locals())
-        
+    # 객체의 수 변화X
+    if len(beforeF.index) == len(afterF.index):
+      afteridx = list(range(len(afterF.index)))
+      for beforeIdx in range(len(beforeF.index)):
+          x = beforeF['x'][beforeIdx]
+          y = beforeF['y'][beforeIdx]
+          minidx = -1
+          mindis = 999
+          for afterCount in afteridx:
+            dis = distance(x, y, afterF['x'][afterCount], afterF['y'][afterCount])
+            if mindis > dis:
+              minidx = afterCount
+              mindis = dis
+          afterF['id'][minidx] = beforeF['id'][beforeIdx]
+          afteridx.remove(minidx)
 
-        # 객체의 수 변화X
-        if len(beforeF.index) == len(afterF.index):
-          afteridx = list(range(len(afterF.index)))
-          for beforeIdx in range(len(beforeF.index)):
-              x = beforeF['x'][beforeIdx]
-              y = beforeF['y'][beforeIdx]
-              minidx = -1
-              mindis = 999
-              for afterCount in afteridx:
-                dis = distance(x, y, afterF['x'][afterCount], afterF['y'][afterCount])
-                if mindis > dis:
-                  minidx = afterCount
-                  mindis = dis
-              afterF['id'][minidx] = beforeF['id'][beforeIdx]
-              afteridx.remove(minidx)
+    # 객체의 수 감소
+    elif len(beforeF.index) > len(afterF.index):
+        beforeidx = list(range(len(beforeF.index)))
+        for afterIdx in range(len(afterF.index)):
+            x = afterF['x'][afterIdx]
+            y = afterF['y'][afterIdx]
+            minidx = -1
+            mindis = 999
+            for beforeCount in beforeidx:
+              dis = distance(x, y, beforeF['x'][beforeCount], beforeF['y'][beforeCount])
+              if mindis > dis:
+                minidx = beforeCount
+                mindis = dis
 
-        # 객체의 수 감소
-        elif len(beforeF.index) > len(afterF.index):
-            beforeidx = list(range(len(beforeF.index)))
-            for afterIdx in range(len(afterF.index)):
-                x = afterF['x'][afterIdx]
-                y = afterF['y'][afterIdx]
-                minidx = -1
-                mindis = 999
-                for beforeCount in beforeidx:
-                  dis = distance(x, y, beforeF['x'][beforeCount], beforeF['y'][beforeCount])
-                  if mindis > dis:
-                    minidx = beforeCount
-                    mindis = dis
-                    
-                afterF['id'][afterIdx] = beforeF['id'][minidx]
-                beforeidx.remove(minidx)      
-            
-
-        # 객체의 수 증가    
-        else:
-            afteridx = list(range(len(afterF.index)))
-            for beforeIdx in range(len(beforeF.index)):
-                x = beforeF['x'][beforeIdx]
-                y = beforeF['y'][beforeIdx]
-                minidx = -1
-                mindis = 999
-                for afterCount in afteridx:
-                  dis = distance(x, y, afterF['x'][afterCount], afterF['y'][afterCount])
-                  if mindis > dis:
-                    minidx = afterCount
-                    mindis = dis
-                afterF['id'][minidx] = beforeF['id'][beforeIdx]
-                afteridx.remove(minidx) 
-
-            for i in range(len(afterF.index)):
-              if afterF['id'][i] == 0.0:
-                afterF['id'][i] = max_id
-                max_id += 1
-
-        return_id_list += ['frame']
-        exec("return_id_list += list(afterF['id'])")
-
-    return return_id_list
+            afterF['id'][afterIdx] = beforeF['id'][minidx]
+            beforeidx.remove(minidx)      
 
 
-# In[5]:
+    # 객체의 수 증가    
+    else:
+        afteridx = list(range(len(afterF.index)))
+        for beforeIdx in range(len(beforeF.index)):
+            x = beforeF['x'][beforeIdx]
+            y = beforeF['y'][beforeIdx]
+            minidx = -1
+            mindis = 999
+            for afterCount in afteridx:
+              dis = distance(x, y, afterF['x'][afterCount], afterF['y'][afterCount])
+              if mindis > dis:
+                minidx = afterCount
+                mindis = dis
+            afterF['id'][minidx] = beforeF['id'][beforeIdx]
+            afteridx.remove(minidx) 
+
+        for i in range(len(afterF.index)):
+          if afterF['id'][i] == 'Person':
+            afterF['id'][i] = max_id
+            max_id += 1
+
+    return_list = [afterF['id'], max_id]
+    return return_list
 
 
-# start = time.time()
+# In[ ]:
+
+
+start = time.time()
+'''
+logging.warning(str(test_video_path))
 
 # conver to imgs
 toImages(imgs_path, test_video_path)
-
+logging.warning('Finish toImages')
 
 # module load
 module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
 detector = hub.load(module_handle).signatures['default']
+logging.warning('Finish module load')
 
 # imgs load
 imgs= glob.glob(imgs_path+'/*.jpg')
@@ -234,29 +217,58 @@ imgs =  natsort.natsorted(imgs)
 final_df = pd.DataFrame(columns=['id', 'x', 'y'])
 frame_count = 0
 
+logging.warning('Start runDetector')
 # run detector
 for file in imgs:
+    final_df = pd.DataFrame(columns=['id', 'x', 'y'])
     frame_df = runDetector(detector, file)
-    final_df = final_df.append({'id' : 'frame', 'x' : frame_count, 'y' : len(frame_df.index)}, ignore_index = True)
     final_df = final_df.append(frame_df, ignore_index=True)
+    name = output_path + '/' + str(frame_count) + '.txt'
+    final_df.to_csv(name, sep='\t', index=False, header=False)
+
+    logging.warning('ok')
     frame_count += 1
 
-# save df to txt
-final_df.to_csv('output.txt', sep='\t', index=False, header=False)
+'''
+# load output files
+logging.warning('start load output')
+outputs_path = output_path + '/*.txt'
+outputs = glob.glob(outputs_path)
+outputs =  natsort.natsorted(outputs)
 
-# load txt to df
-final_df = pd.read_csv('output.txt', sep='\t', header=None)
+
+final_df = pd.DataFrame(columns=['id', 'x', 'y'])
+max_id = 0
+frame = 0
+before = pd.DataFrame(columns=['id', 'x', 'y'])
+
+logging.warning('start indexing')
+for frame in range(len(outputs)-1):
+    before_path = outputs[frame]
+    after_path = outputs[frame+1]
+    if frame==0:
+        before = pd.read_csv(before_path, sep='\t', names = ['id', 'x', 'y'], header=None)
+        id_list = np.array(range(1, len(before.index)+1))
+        before['id'] = id_list
+        max_id = len(before.index)
+    
+    final_df = final_df.append({'id' : 'frame', 'x' : frame, 'y' : len(before.index)}, ignore_index=True)    
+    final_df = final_df.append(before, ignore_index=True)
+    
+    after = pd.read_csv(after_path, sep='\t', names = ['id', 'x', 'y'], header=None)
+    [after['id'], max_id] = objectIndexing(before, after, max_id)
+    
+    before = after
+    
+# save final txt file 
+final_df = final_df.append({'id' : 'frame', 'x' : (frame+1), 'y' : len(before.index)}, ignore_index=True)    
+final_df = final_df.append(before, ignore_index=True)
+final_df.to_csv(final_path, sep='\t', header=False, index=False)   
 
 
-# 객체 구분 알고리즘
-id_list = objectIndexing(final_df)
+end = time.time()
 
-final_df[0] = id_list
-final_df.to_csv('../Resources/reality_data.txt', sep='\t', index=False, header=False)
-
-# end = time.time()
-
-# print('time : ', int(end-start)/60)
+logging.warning(int(end-start)/60)
 
 
 # In[ ]:
